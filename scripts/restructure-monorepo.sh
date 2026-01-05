@@ -59,20 +59,28 @@ if [ -f src/lib/utils.ts ]; then
 fi
 
 # Move remaining app code into apps/web/src (preserve landing items already moved)
-for item in src/*; do
-  case "$item" in
-    src/components|src/components/*|src/components/landing-page|src/components/ui)
-      # already moved
-      continue
-      ;;
-    src/pages/LandingPage.tsx|src/pages/Terms.tsx|src/pages/Privacy.tsx|src/pages/Payment.tsx)
-      continue
-      ;;
-  esac
-  echo "Moving $item -> apps/web/src/"
-  # If it's a file or dir, move it; fallback to copy if git mv fails
-  git mv "$item" "apps/web/src/" 2>/dev/null || (mkdir -p "apps/web/src/" && rsync -a "$item" "apps/web/src/" && git add "apps/web/src/$(basename "$item")")
-done
+if [ -d src ] && [ "$(ls -A src 2>/dev/null)" ]; then
+  for item in src/*; do
+    case "$item" in
+      src/components|src/components/*|src/components/landing-page|src/components/ui)
+        continue
+        ;;
+      src/pages/LandingPage.tsx|src/pages/Terms.tsx|src/pages/Privacy.tsx|src/pages/Payment.tsx)
+        continue
+        ;;
+    esac
+
+    echo "Moving $item -> apps/web/src/"
+    git mv "$item" "apps/web/src/" 2>/dev/null || (
+      mkdir -p "apps/web/src/" &&
+      cp -R "$item" "apps/web/src/" &&
+      git add "apps/web/src/$(basename "$item")"
+    )
+  done
+else
+  echo "src/ directory is empty or already moved — skipping app source move."
+fi
+
 
 # Move selected lib files (api, toast) into apps/web/src/lib if present
 if [ -d src/lib ]; then
