@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["DOM", "ES2020"],
+    "jsx": "react-jsx",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "@new/ui": ["packages/ui/src"],
+      "@new/ui/*": ["packages/ui/src/*"],
+      "@new/utils": ["packages/utils/src"],
+      "@new/utils/*": ["packages/utils/src/*"]
+    }
+  },
+  "exclude": ["node_modules", "dist", ".next"]
+}
